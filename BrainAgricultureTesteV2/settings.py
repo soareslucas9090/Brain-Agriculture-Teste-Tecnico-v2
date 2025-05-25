@@ -91,6 +91,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "usuarios.Usuarios"
+ACCOUNT_AUTHENTICATION_METHOD = "cpf_cnpj"
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = False
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
