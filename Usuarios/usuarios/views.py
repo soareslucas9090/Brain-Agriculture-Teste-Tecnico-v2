@@ -13,8 +13,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
+from Core.BasicModelViewSet import BasicModelViewSet
 from Core.Permissions import EhAdmin, EhMeuDado
 
 from .models import Usuarios
@@ -50,7 +50,7 @@ from .serializers import Usuarios2AdminSerializer, UsuariosSerializer
         ),
     ],
 )
-class UsuariosViewSet(ModelViewSet):
+class UsuariosViewSet(BasicModelViewSet):
     queryset = Usuarios.objects.all()
     serializer_class = Usuarios2AdminSerializer
     filter_backends = [DjangoFilterBackend]
@@ -64,7 +64,7 @@ class UsuariosViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.kwargs.get("pk", None):
-            return [EhMeuDado()]
+            return [EhAdmin(), EhMeuDado()]
         return [EhAdmin()]
 
     def get_dono_do_registro(self):
