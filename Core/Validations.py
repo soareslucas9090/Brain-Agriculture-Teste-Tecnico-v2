@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 ############ CÓDIGO BASEADO NA LIB ABERTA 'validador-cnpj-cpf', disponível em 'https://github.com/eduardoranucci/validador-cnpj-cpf'
-def validar_cpf_cnpj(valor):
+def validar_cpf_cnpj(valor, levantar_excessao=True):
     def _valida_cpf(cpf):
         if len(set(cpf)) == 1:
             raise ValidationError(_("CPF inválido: todos os dígitos são iguais."))
@@ -65,7 +65,13 @@ def validar_cpf_cnpj(valor):
         cpf_validado = cpf + str(dig_11)
 
         if not digitos_verificadores == cpf_validado[9:]:
-            raise ValidationError(_("O CPF é inválido."))
+            if levantar_excessao:
+                raise ValidationError(_("O CPF é inválido."))
+            else:
+                return False
+
+        if not levantar_excessao:
+            return True
 
     def _valida_cnpj(cnpj):
         if len(set(cnpj)) == 1:
@@ -148,7 +154,13 @@ def validar_cpf_cnpj(valor):
         cnpj_validado = cnpj + str(dig_14)
 
         if not digitos_verificadores == cnpj_validado[12:]:
-            raise ValidationError(_("O CNPJ é inválido."))
+            if levantar_excessao:
+                raise ValidationError(_("O CNPJ é inválido."))
+            else:
+                return False
+
+        if not levantar_excessao:
+            return True
 
     valor = valor.replace(".", "").replace("-", "").replace("/", "")
 

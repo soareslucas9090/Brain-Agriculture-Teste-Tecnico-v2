@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from Core.Validations import validar_cpf_cnpj
+
 from .models import Usuarios
 
 
@@ -19,6 +21,15 @@ class Usuarios2AdminSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     password = serializers.CharField(write_only=True)
+    is_admin = serializers.BooleanField(default=False, required=False)
+    is_superuser = serializers.BooleanField(read_only=True, required=False)
+    is_active = serializers.BooleanField(default=True, required=False)
+
+    def validate_cpf_cnpj(self, value):
+        if validar_cpf_cnpj(value, levantar_excessao=False):
+            return value
+        else:
+            raise serializers.ValidationError("O CPF deve conter 11 dígitos.")
 
     def validate_password(self, value):
         password = value
