@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -20,19 +21,15 @@ class UsuariosManager(BaseUserManager):
 
     def create_user(self, cpf_cnpj, password=None, **extra_fields):
         extra_fields.setdefault("is_admin", False)
-        extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(cpf_cnpj, password, **extra_fields)
 
     def create_superuser(self, cpf_cnpj, password=None, **extra_fields):
         extra_fields.setdefault("is_admin", True)
-        extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
         if extra_fields.get("is_admin") is not True:
             raise ValueError(_("Superusuário deve ter is_admin=True."))
-        if extra_fields.get("is_staff") is not True:
-            raise ValueError(_("Superusuário deve ter is_staff=True."))
         if extra_fields.get("is_superuser") is not True:
             raise ValueError(_("Superusuário deve ter is_superuser=True."))
 
@@ -58,8 +55,8 @@ class Usuarios(AbstractBaseUser, BasicModel):
             "Desmarque esta opção em vez de excluir contas."
         ),
     )
-    is_staff = models.BooleanField(
-        _("Membro da Equipe (Acesso ao Admin)"),
+    is_superuser = models.BooleanField(
+        _("Superusuário"),
         default=False,
         help_text=_(
             "Designa se o usuário pode fazer login no site de administração (admin)."
@@ -73,6 +70,7 @@ class Usuarios(AbstractBaseUser, BasicModel):
             "Se True, o usuário terá todas as permissões (is_superuser) e acesso ao admin (is_staff)."
         ),
     )
+    last_login = None
 
     objects = UsuariosManager()
 
@@ -88,11 +86,24 @@ class Usuarios(AbstractBaseUser, BasicModel):
     def __str__(self):
         return f"{self.cpf_cnpj} - {self.nome}"
 
+    def capitalizar_nome(self):
+        nome_capitalizado = []
+        preposicoes = ["da", "de", "do"]
+
+        for nome in self.nome.split():
+            if not nome in preposicoes:
+                nome = nome.capitalize()
+            nome_capitalizado.append(nome)
+
+        novo_nome = " ".join(nome_capitalizado)
+        self.nome = novo_nome
+
     def save(self, *args, **kwargs):
-        if self.is_admin:
-            self.is_staff = True
-            self.is_superuser = True
+        if self.is_superuser:
+            self.is_admin = True
 
         validar_cpf_cnpj(self.cpf_cnpj)
+
+        self.capitalizar_nome()
 
         super().save(*args, **kwargs)

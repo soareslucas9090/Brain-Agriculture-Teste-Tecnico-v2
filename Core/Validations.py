@@ -1,8 +1,13 @@
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 
+############ CÓDIGO BASEADO NA LIB ABERTA 'validador-cnpj-cpf', disponível em 'https://github.com/eduardoranucci/validador-cnpj-cpf'
 def validar_cpf_cnpj(valor):
     def _valida_cpf(cpf):
+        if len(set(cpf)) == 1:
+            raise ValidationError(_("CPF inválido: todos os dígitos são iguais."))
+
         digitos_verificadores = cpf[9:]
 
         cpf = cpf[:9]
@@ -63,6 +68,9 @@ def validar_cpf_cnpj(valor):
             raise ValidationError(_("O CPF é inválido."))
 
     def _valida_cnpj(cnpj):
+        if len(set(cnpj)) == 1:
+            raise ValidationError(_("CNPJ inválido: todos os dígitos são iguais."))
+
         digitos_verificadores = cnpj[12:]
 
         cnpj = cnpj[:12]
@@ -149,4 +157,6 @@ def validar_cpf_cnpj(valor):
     elif len(valor) == 14:
         _valida_cnpj(valor)
     else:
-        raise ValidationError(_("O CPF/CNPJ não pode estar vazio."))
+        raise ValidationError(
+            _("O CPF precisa ter 11 dígitos ou o CNPJ precisa ter 14 dígitos.")
+        )
