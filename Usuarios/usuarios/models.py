@@ -1,9 +1,4 @@
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -11,7 +6,7 @@ from Core.BasicModel import BasicModel
 from Core.Validations import validar_cpf_cnpj
 
 
-class UsuarioManager(BaseUserManager):
+class UsuariosManager(BaseUserManager):
     def _create_user(self, cpf_cnpj, password, **extra_fields):
         if not cpf_cnpj:
             raise ValueError(_("O CPF/CNPJ deve ser fornecido."))
@@ -44,13 +39,12 @@ class UsuarioManager(BaseUserManager):
         return self._create_user(cpf_cnpj, password, **extra_fields)
 
 
-class Usuario(AbstractBaseUser, PermissionsMixin, BasicModel):
+class Usuarios(AbstractBaseUser, BasicModel):
     cpf_cnpj = models.CharField(
         _("CPF/CNPJ"),
         max_length=14,
         unique=True,
         help_text=_("Obrigatório. CPF ou CNPJ único para login."),
-        validators=[validar_cpf_cnpj],
         error_messages={
             "unique": _("Já existe um usuário cadastrado com este CPF/CNPJ."),
         },
@@ -80,7 +74,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin, BasicModel):
         ),
     )
 
-    objects = UsuarioManager()
+    objects = UsuariosManager()
 
     USERNAME_FIELD = "cpf_cnpj"
     REQUIRED_FIELDS = [
@@ -98,5 +92,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin, BasicModel):
         if self.is_admin:
             self.is_staff = True
             self.is_superuser = True
+
+        validar_cpf_cnpj(self.cpf_cnpj)
 
         super().save(*args, **kwargs)

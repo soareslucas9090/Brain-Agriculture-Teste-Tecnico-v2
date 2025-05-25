@@ -6,9 +6,6 @@ from simple_history.models import HistoricalRecords
 
 
 class BasicModel(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, verbose_name=_("ID")
-    )
     data_criacao = models.DateTimeField(
         auto_now_add=True,
         editable=False,
