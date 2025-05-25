@@ -3,6 +3,9 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from .drf_spectacular_settings import *
+from .rest_framework_settings import *
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
@@ -20,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "drf_spectacular",
     "rest_framework",
     "simple_history",
     "corsheaders",
