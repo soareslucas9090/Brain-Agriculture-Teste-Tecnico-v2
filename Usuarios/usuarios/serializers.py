@@ -17,8 +17,11 @@ class UsuariosSerializer(serializers.ModelSerializer):
     produtor_perfil = serializers.SerializerMethodField()
 
     def get_produtor_perfil(self, obj):
-        data = {"id": obj.produtor_perfil.id}
-        return data
+        try:
+            data = {"id": obj.produtor_perfil.id}
+            return data
+        except:
+            return ""
 
 
 class Usuarios2AdminSerializer(serializers.ModelSerializer):
@@ -33,8 +36,11 @@ class Usuarios2AdminSerializer(serializers.ModelSerializer):
     produtor_perfil = serializers.SerializerMethodField()
 
     def get_produtor_perfil(self, obj):
-        data = {"id": obj.produtor_perfil.id}
-        return data
+        try:
+            data = {"id": obj.produtor_perfil.id}
+            return data
+        except:
+            return ""
 
     def validate_cpf_cnpj(self, value):
         if validar_cpf_cnpj(value, levantar_excessao=False):
