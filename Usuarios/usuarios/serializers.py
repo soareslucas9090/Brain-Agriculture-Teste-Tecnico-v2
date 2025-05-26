@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from Core.Validations import validar_cpf_cnpj
@@ -29,7 +30,7 @@ class Usuarios2AdminSerializer(serializers.ModelSerializer):
         if validar_cpf_cnpj(value, levantar_excessao=False):
             return value
         else:
-            raise serializers.ValidationError("O CPF deve conter 11 dígitos.")
+            raise serializers.ValidationError("CPF/CNPJ inválido.")
 
     def validate_password(self, value):
         password = value
@@ -39,4 +40,4 @@ class Usuarios2AdminSerializer(serializers.ModelSerializer):
                 "A senha deve ter pelo menos 8 caracteres."
             )
 
-        return password
+        return make_password(password=password)

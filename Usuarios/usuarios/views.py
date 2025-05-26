@@ -61,12 +61,12 @@ class UsuariosViewSet(BasicModelViewSet):
         return super().list(request, *args, **kwargs)
 
     def get_serializer_class(self):
-        if self.action == "retrieve" and not self.request.user.is_admin:
+        if not self.request.user.is_admin:
             return UsuariosSerializer
         return super().get_serializer_class()
 
     def get_permissions(self):
-        if self.kwargs.get("pk", None):
+        if self.kwargs.get("pk", None) and self.request.method == "GET":
             return [EhMeuDadoOuSouAdmin()]
         return [EhAdmin()]
 
