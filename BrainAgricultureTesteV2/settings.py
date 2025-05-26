@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     ### Usuários ###
     "Usuarios.usuarios",
     "Usuarios.produtores",
+    ### Common ###,
+    "Common.localidades",
 ]
 
 MIDDLEWARE = [
