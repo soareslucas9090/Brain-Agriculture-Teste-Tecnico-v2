@@ -15,7 +15,7 @@ class Produtores(BasicModel):
     )
 
     def __str__(self):
-        return self.nome_produtor
+        return self.usuario.nome
 
     class Meta:
         verbose_name = _("Produtor Rural")
