@@ -15,7 +15,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from Core.BasicModelViewSet import BasicModelViewSet
-from Core.Permissions import EhAdmin, EhMeuDado
+from Core.Permissions import EhAdmin, EhMeuDadoOuSouAdmin
 
 from .models import Usuarios
 from .serializers import Usuarios2AdminSerializer, UsuariosSerializer
@@ -67,7 +67,7 @@ class UsuariosViewSet(BasicModelViewSet):
 
     def get_permissions(self):
         if self.kwargs.get("pk", None):
-            return [EhAdmin(), EhMeuDado()]
+            return [EhMeuDadoOuSouAdmin()]
         return [EhAdmin()]
 
     def get_dono_do_registro(self):

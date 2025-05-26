@@ -5,7 +5,7 @@ from Core.BasicModel import BasicModel
 from Usuarios.usuarios.models import Usuarios
 
 
-class Produtor(BasicModel):
+class Produtores(BasicModel):
     usuario = models.OneToOneField(
         Usuarios,
         on_delete=models.CASCADE,

@@ -9,16 +9,10 @@ class EhAdmin(permissions.BasePermission):
 
         return request.user.is_admin
 
+
+class EhMeuDadoOuSouAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if isinstance(request.user, AnonymousUser):
             return False
 
-        return request.user.is_admin
-
-
-class EhMeuDado(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if isinstance(request.user, AnonymousUser):
-            return False
-
-        return view.get_dono_do_registro()
+        return view.get_dono_do_registro() or request.user.is_admin
