@@ -1,18 +1,9 @@
 from typing import override
 
+from django.contrib.auth.models import AnonymousUser
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
-    OpenApiExample,
-    OpenApiParameter,
-    OpenApiResponse,
-    extend_schema,
-)
-from rest_framework import status
-from rest_framework.generics import GenericAPIView
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 
 from Core.BasicModelViewSet import BasicModelViewSet
 from Core.Permissions import EhAdmin, EhMeuDadoOuSouAdmin
@@ -61,7 +52,10 @@ class UsuariosViewSet(BasicModelViewSet):
         return super().list(request, *args, **kwargs)
 
     def get_serializer_class(self):
-        if not self.request.user.is_admin:
+        if (
+            isinstance(self.request.user, AnonymousUser)
+            or not self.request.user.is_admin
+        ):
             return UsuariosSerializer
         return super().get_serializer_class()
 
