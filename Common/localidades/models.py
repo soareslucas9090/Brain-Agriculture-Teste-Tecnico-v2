@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from Core.BasicModel import BasicModel
 
 
-class Estado(BasicModel):
+class Estados(BasicModel):
     codigo_ibge = models.IntegerField(
         _("Código IBGE do Estado"),
         unique=True,
@@ -21,14 +21,14 @@ class Estado(BasicModel):
         return f"{self.nome} ({self.sigla})"
 
 
-class Cidade(BasicModel):
+class Cidades(BasicModel):
     codigo_ibge = models.IntegerField(
         _("Código IBGE da Cidade"),
         unique=True,
         help_text=_("Código numérico único da cidade fornecido pelo IBGE."),
     )
     estado = models.ForeignKey(
-        Estado,
+        Estados,
         on_delete=models.PROTECT,
         related_name="cidades",
         verbose_name=_("Estado"),
