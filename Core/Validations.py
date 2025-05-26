@@ -165,9 +165,9 @@ def validar_cpf_cnpj(valor, levantar_excessao=True):
     valor = valor.replace(".", "").replace("-", "").replace("/", "")
 
     if len(valor) == 11:
-        _valida_cpf(valor)
+        return _valida_cpf(valor)
     elif len(valor) == 14:
-        _valida_cnpj(valor)
+        return _valida_cnpj(valor)
     else:
         raise ValidationError(
             _("O CPF precisa ter 11 dígitos ou o CNPJ precisa ter 14 dígitos.")
