@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -23,6 +24,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions",
     "drf_spectacular",
     "rest_framework",
     "simple_history",
@@ -77,6 +79,12 @@ DATABASES = {
         "PORT": os.environ.get("DB_PORT"),
     }
 }
+
+if "test" in sys.argv or "test_coverage" in sys.argv:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
