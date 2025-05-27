@@ -14,7 +14,7 @@ class UsuariosManager(BaseUserManager):
 
         cpf_cnpj = "".join(filter(str.isdigit, cpf_cnpj))
 
-        validar_cpf_cnpj(self.cpf_cnpj)
+        validar_cpf_cnpj(cpf_cnpj)
 
         user = self.model(cpf_cnpj=cpf_cnpj, **extra_fields)
         user.set_password(password)
