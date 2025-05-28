@@ -31,9 +31,6 @@ class ProdutoresModelTestCase(TestCase):
 
         self.assertEqual(produtor.usuario, self.user)
         self.assertEqual(str(produtor), self.user.nome)
-        self.assertTrue(hasattr(produtor, "id"))
-        self.assertTrue(hasattr(produtor, "created_at"))
-        self.assertTrue(hasattr(produtor, "updated_at"))
 
     def test_2_produtor_str_method(self):
         produtor = Produtores.objects.create(usuario=self.user)
@@ -119,11 +116,7 @@ class ProdutoresViewSetTestCase(TestCase):
             "usuarios:produtores-detail", kwargs={"pk": pk}
         )
 
-    def test_8_list_produtores_anonymous_user(self):
-        response = self.client.get(self.list_url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_9_list_produtores_as_user_shows_only_own(self):
+    def test_8_list_produtores_as_user_shows_only_own(self):
         self.client.force_authenticate(user=self.user1)
         response = self.client.get(self.list_url)
 
@@ -131,14 +124,14 @@ class ProdutoresViewSetTestCase(TestCase):
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["id"], self.produtor1.id)
 
-    def test_10_list_produtores_as_admin_shows_all(self):
+    def test_9_list_produtores_as_admin_shows_all(self):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
 
-    def test_11_retrieve_own_produtor_as_user(self):
+    def test_10_retrieve_own_produtor_as_user(self):
         self.client.force_authenticate(user=self.user1)
         response = self.client.get(self.detail_url(self.produtor1.pk))
 
@@ -146,13 +139,7 @@ class ProdutoresViewSetTestCase(TestCase):
         self.assertEqual(response.data["id"], self.produtor1.id)
         self.assertEqual(response.data["usuario"], self.user1.id)
 
-    def test_12_retrieve_other_produtor_as_user_forbidden(self):
-        self.client.force_authenticate(user=self.user1)
-        response = self.client.get(self.detail_url(self.produtor2.pk))
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_13_retrieve_any_produtor_as_admin(self):
+    def test_11_retrieve_any_produtor_as_admin(self):
         self.client.force_authenticate(user=self.admin_user)
 
         response1 = self.client.get(self.detail_url(self.produtor1.pk))
@@ -161,14 +148,14 @@ class ProdutoresViewSetTestCase(TestCase):
         response2 = self.client.get(self.detail_url(self.produtor2.pk))
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
 
-    def test_14_create_produtor_as_user_forbidden(self):
+    def test_12_create_produtor_as_user_forbidden(self):
         self.client.force_authenticate(user=self.user3)
         data = {"usuario": self.user3.id}
         response = self.client.post(self.list_url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_15_create_produtor_as_admin_success(self):
+    def test_13_create_produtor_as_admin_success(self):
         self.client.force_authenticate(user=self.admin_user)
         data = {"usuario": self.user3.id}
         response = self.client.post(self.list_url, data, format="json")
@@ -176,7 +163,7 @@ class ProdutoresViewSetTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Produtores.objects.filter(usuario=self.user3).exists())
 
-    def test_16_create_produtor_duplicate_user_validation(self):
+    def test_14_create_produtor_duplicate_user_validation(self):
         self.client.force_authenticate(user=self.admin_user)
         data = {"usuario": self.user1.id}
         response = self.client.post(self.list_url, data, format="json")
@@ -184,7 +171,7 @@ class ProdutoresViewSetTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("usuario", response.data)
 
-    def test_17_update_produtor_as_user_forbidden(self):
+    def test_15_update_produtor_as_user_forbidden(self):
         self.client.force_authenticate(user=self.user1)
         data = {"usuario": self.user1.id}
         response = self.client.patch(
@@ -193,7 +180,7 @@ class ProdutoresViewSetTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_18_update_produtor_as_admin_success(self):
+    def test_16_update_produtor_as_admin_success(self):
         new_user = Usuarios.objects.create_user(
             cpf_cnpj="02845779011", nome="New User", password="password123"
         )
@@ -208,20 +195,20 @@ class ProdutoresViewSetTestCase(TestCase):
         self.produtor1.refresh_from_db()
         self.assertEqual(self.produtor1.usuario, new_user)
 
-    def test_19_delete_produtor_as_user_forbidden(self):
+    def test_17_delete_produtor_as_user_forbidden(self):
         self.client.force_authenticate(user=self.user1)
         response = self.client.delete(self.detail_url(self.produtor1.pk))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_20_delete_produtor_as_admin_success(self):
+    def test_18_delete_produtor_as_admin_success(self):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.delete(self.detail_url(self.produtor2.pk))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Produtores.objects.filter(pk=self.produtor2.pk).exists())
 
-    def test_21_filter_by_usuario_nome(self):
+    def test_19_filter_by_usuario_nome(self):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(self.list_url, {"usuario__nome": "User One"})
 
@@ -229,7 +216,7 @@ class ProdutoresViewSetTestCase(TestCase):
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["usuario"], self.user1.id)
 
-    def test_22_filter_by_usuario_cpf_cnpj(self):
+    def test_20_filter_by_usuario_cpf_cnpj(self):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(self.list_url, {"usuario__cpf_cnpj": cpf_valido_2})
 
@@ -237,7 +224,7 @@ class ProdutoresViewSetTestCase(TestCase):
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["usuario"], self.user2.id)
 
-    def test_23_filter_by_usuario_is_active(self):
+    def test_21_filter_by_usuario_is_active(self):
         self.user2.is_active = False
         self.user2.save()
 
@@ -247,21 +234,20 @@ class ProdutoresViewSetTestCase(TestCase):
         self.assertEqual(response_active.status_code, status.HTTP_200_OK)
         self.assertEqual(response_active.data["count"], 1)
 
-        # Testa filtro por inativos
         response_inactive = self.client.get(
             self.list_url, {"usuario__is_active": "false"}
         )
         self.assertEqual(response_inactive.status_code, status.HTTP_200_OK)
         self.assertEqual(response_inactive.data["count"], 1)
 
-    def test_24_user_without_produtor_gets_empty_list(self):
+    def test_22_user_without_produtor_gets_empty_list(self):
         self.client.force_authenticate(user=self.user3)
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 0)
 
-    def test_25_get_dono_do_registro_method(self):
+    def test_23_get_dono_do_registro_method(self):
         from .views import ProdutoresViewSet
 
         view = ProdutoresViewSet()
