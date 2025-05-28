@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from Usuarios.produtores.models import Produtores
 from Core.BasicMyDataAndModelViewSet import BasicMyDataAndModelViewSet
 
 from .business import CulturaBusinessService, FazendaBusinessService
@@ -53,8 +54,14 @@ class FazendasViewSet(BasicMyDataAndModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        try:
+            produtor = Produtores.objects.get(id=serializer.validated_data["produtor"].id)
+        except:
+            return Response({"detail": "Produtor não encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
-        if serializer["produtor"].usuario != request.user:
+        if produtor.usuario != request.user:
             return Response(
                 {
                     "detail": "Você não tem permissão para acessar recursos de outros usuários.",
@@ -62,12 +69,11 @@ class FazendasViewSet(BasicMyDataAndModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
-    def get_dono_do_registro(self):
+    def get_dono_do_registro(self, obj):
         try:
-            fazenda = Fazendas.objects.get(pk=self.kwargs.get("pk"))
-            return self.request.user.id == fazenda.produtor.usuario.id
+            return self.request.user.id == obj.produtor.usuario.id
         except:
             return False
 
@@ -152,8 +158,14 @@ class SafraViewSet(BasicMyDataAndModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        try:
+            fazenda = Fazendas.objects.get(id=serializer.validated_data["fazenda"].id)
+        except:
+            return Response({"detail": "Fazenda não encontrada."}, status=status.HTTP_404_NOT_FOUND)
 
-        if serializer["fazenda"].produtor.usuario != request.user:
+        if fazenda.produtor.usuario != request.user:
             return Response(
                 {
                     "detail": "Você não tem permissão para acessar recursos de outros usuários.",
@@ -161,12 +173,11 @@ class SafraViewSet(BasicMyDataAndModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
-    def get_dono_do_registro(self):
+    def get_dono_do_registro(self, obj):
         try:
-            safra = Safras.objects.get(pk=self.kwargs.get("pk"))
-            return self.request.user.id == safra.fazenda.produtor.usuario.id
+            return self.request.user.id == obj.fazenda.produtor.usuario.id
         except:
             return False
 
@@ -238,8 +249,14 @@ class CulturaViewSet(BasicMyDataAndModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        try:
+            safra = Safras.objects.get(id=serializer.validated_data["safra"].id)
+        except:
+            return Response({"detail": "Safra não encontrada."}, status=status.HTTP_404_NOT_FOUND)
 
-        if serializer["safra"].fazenda.produtor.usuario != request.user:
+        if safra.fazenda.produtor.usuario != request.user:
             return Response(
                 {
                     "detail": "Você não tem permissão para acessar recursos de outros usuários.",
@@ -247,17 +264,16 @@ class CulturaViewSet(BasicMyDataAndModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
             return CulturaCreateUpdateSerializer
         return CulturaSerializer
 
-    def get_dono_do_registro(self):
+    def get_dono_do_registro(self, obj):
         try:
-            cultura = Culturas.objects.get(pk=self.kwargs.get("pk"))
-            return self.request.user.id == cultura.safra.fazenda.produtor.usuario.id
+            return self.request.user.id == obj.safra.fazenda.produtor.usuario.id
         except:
             return False
 

@@ -7,6 +7,6 @@ from .BasicModelViewSet import BasicModelViewSet
 
 class BasicMyDataAndModelViewSet(BasicModelViewSet):
     def get_permissions(self):
-        if self.action == "retrieve":
+        if self.action in ["retrieve", "update", "partial_update", "destroy"]:
             return [EhMeuDadoOuSouAdmin()]
         return [IsAuthenticated()]

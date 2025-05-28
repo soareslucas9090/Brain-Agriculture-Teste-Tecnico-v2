@@ -21,48 +21,48 @@ User = get_user_model()
 
 
 class AreaValidationServiceTest(TestCase):
-    def test_validate_area_total_fazenda_valida(self):
-        AreaValidationService.validate_area_total_fazenda(Decimal("100.50"))
-
-    def test_validate_area_total_fazenda_zero(self):
+    def test_1_validate_area_total_fazenda_zero(self):
         from rest_framework import serializers
 
         with self.assertRaises(serializers.ValidationError):
             AreaValidationService.validate_area_total_fazenda(Decimal("0"))
 
-    def test_validate_area_total_fazenda_negativa(self):
+    def test_2_validate_area_total_fazenda_negativa(self):
         from rest_framework import serializers
 
         with self.assertRaises(serializers.ValidationError):
             AreaValidationService.validate_area_total_fazenda(Decimal("-10"))
 
-    def test_validate_area_total_fazenda_muito_grande(self):
+    def test_3_validate_area_total_fazenda_muito_grande(self):
         from rest_framework import serializers
 
         with self.assertRaises(serializers.ValidationError):
             AreaValidationService.validate_area_total_fazenda(Decimal("200000"))
 
-    def test_validate_area_plantada_valida(self):
+    def test_4_validate_area_plantada_valida(self):
         AreaValidationService.validate_area_plantada(Decimal("50.25"))
 
-    def test_validate_area_plantada_zero(self):
+    def test_5_validate_area_plantada_zero(self):
         from rest_framework import serializers
 
         with self.assertRaises(serializers.ValidationError):
             AreaValidationService.validate_area_plantada(Decimal("0"))
+    
+    def test_6_validate_area_total_fazenda_valida(self):
+        AreaValidationService.validate_area_total_fazenda(Decimal("100.50"))
 
 
 class SafraValidationServiceTest(TestCase):
-    def test_validate_ano_safra_valido(self):
+    def test_7_validate_ano_safra_valido(self):
         SafraValidationService.validate_ano_safra(2024)
 
-    def test_validate_ano_safra_muito_antigo(self):
+    def test_8_validate_ano_safra_muito_antigo(self):
         from rest_framework import serializers
 
         with self.assertRaises(serializers.ValidationError):
             SafraValidationService.validate_ano_safra(1800)
 
-    def test_validate_ano_safra_muito_futuro(self):
+    def test_9_validate_ano_safra_muito_futuro(self):
         from rest_framework import serializers
 
         with self.assertRaises(serializers.ValidationError):
@@ -72,15 +72,15 @@ class SafraValidationServiceTest(TestCase):
 class FazendaBusinessServiceTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            nome="Teste", cpf_cnpj="12345678901", password="testpass123"
+            nome="Teste", cpf_cnpj="75122701008", password="testpass123"
         )
 
         self.produtor = Produtores.objects.create(
-            usuario=self.user, nome="Produtor Teste"
+            usuario=self.user
         )
 
-        self.estado = Estados.objects.create(nome="São Paulo", sigla="SP")
-        self.cidade = Cidades.objects.create(nome="Campinas", estado=self.estado)
+        self.estado = Estados.objects.create(nome="São Paulo", sigla="SP", codigo_ibge=1)
+        self.cidade = Cidades.objects.create(nome="Campinas", estado=self.estado, codigo_ibge=2)
 
         self.fazenda = Fazendas.objects.create(
             nome="Fazenda Teste",
@@ -89,7 +89,7 @@ class FazendaBusinessServiceTest(TestCase):
             area_total=Decimal("1000.00"),
         )
 
-    def test_calcular_area_info(self):
+    def test_10_calcular_area_info(self):
         info = FazendaBusinessService.calcular_area_info(self.fazenda, 2024)
 
         self.assertEqual(info["area_total"], Decimal("1000.00"))
@@ -102,27 +102,40 @@ class FazendaBusinessServiceTest(TestCase):
 class FazendaAPITest(APITestCase):
     def setUp(self):
         self.admin_user = User.objects.create_user(
-            nome="Admin", cpf_cnpj="12345678901", password="adminpass123", is_admin=True
+            nome="Admin", cpf_cnpj="64311090072", password="adminpass123", is_admin=True
         )
 
         self.user = User.objects.create_user(
-            nome="Usuário", cpf_cnpj="98765432109", password="userpass123"
+            nome="Usuário", cpf_cnpj="46347977044", password="userpass123"
         )
 
         self.produtor = Produtores.objects.create(
-            usuario=self.user, nome="Produtor Teste"
+            usuario=self.user
         )
         self.user.produtor_perfil = self.produtor
         self.user.save()
 
-        self.estado = Estados.objects.create(nome="São Paulo", sigla="SP")
-        self.cidade = Cidades.objects.create(nome="Campinas", estado=self.estado)
+        self.estado = Estados.objects.create(nome="São Paulo", sigla="SP", codigo_ibge=3)
+        self.cidade = Cidades.objects.create(nome="Campinas", estado=self.estado, codigo_ibge=4)
 
     def get_token(self, user):
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token)
 
-    def test_criar_fazenda_sucesso(self):
+    def test_11_criar_fazenda_sucesso(self):
+        # Primeiro, vamos testar se conseguimos criar uma fazenda diretamente no banco
+        fazenda = Fazendas.objects.create(
+            nome="Fazenda Teste Direto",
+            produtor=self.produtor,
+            cidade=self.cidade,
+            area_total=Decimal("500.00")
+        )
+        self.assertEqual(Fazendas.objects.count(), 1)
+        
+        # Limpar para testar via API
+        Fazendas.objects.all().delete()
+        
+        # Agora vamos testar via API
         token = self.get_token(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
@@ -133,11 +146,18 @@ class FazendaAPITest(APITestCase):
             "area_total": "500.00",
         }
 
-        response = self.client.post("/api/fazendas/fazendas/", data)
+        response = self.client.post("/api/brainagriculture/v1/fazendas/", data, format='json')
+        
+        # Debug: imprimir a resposta para ver o que está acontecendo
+        if response.status_code != status.HTTP_201_CREATED:
+            print(f"Status Code: {response.status_code}")
+            print(f"Response Data: {response.data}")
+            print(f"Response Content: {response.content}")
+            
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Fazendas.objects.count(), 1)
 
-    def test_criar_fazenda_area_invalida(self):
+    def test_12_criar_fazenda_area_invalida(self):
         token = self.get_token(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
@@ -148,7 +168,7 @@ class FazendaAPITest(APITestCase):
             "area_total": "0",
         }
 
-        response = self.client.post("/api/fazendas/fazendas/", data)
+        response = self.client.post("/api/brainagriculture/v1/fazendas/", data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Fazendas.objects.count(), 0)
 
@@ -157,15 +177,15 @@ class CulturaValidationTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
-            nome="Teste", cpf_cnpj="12345678901", password="testpass123"
+            nome="Teste", cpf_cnpj="75065282072", password="testpass123"
         )
 
         self.produtor = Produtores.objects.create(
-            usuario=self.user, nome="Produtor Teste"
+            usuario=self.user
         )
 
-        self.estado = Estados.objects.create(nome="São Paulo", sigla="SP")
-        self.cidade = Cidades.objects.create(nome="Campinas", estado=self.estado)
+        self.estado = Estados.objects.create(nome="São Paulo", sigla="SP", codigo_ibge=5)
+        self.cidade = Cidades.objects.create(nome="Campinas", estado=self.estado, codigo_ibge=6)
 
         self.fazenda = Fazendas.objects.create(
             nome="Fazenda Teste",
@@ -176,12 +196,12 @@ class CulturaValidationTest(TestCase):
 
         self.safra = Safras.objects.create(fazenda=self.fazenda, ano=2024)
 
-    def test_area_cultura_dentro_do_limite(self):
+    def test_13_area_cultura_dentro_do_limite(self):
         AreaValidationService.validate_area_cultura_disponivel(
             self.safra, Decimal("500.00")
         )
 
-    def test_area_cultura_excede_limite(self):
+    def test_14_area_cultura_excede_limite(self):
         from rest_framework import serializers
 
         with self.assertRaises(serializers.ValidationError):
@@ -189,7 +209,7 @@ class CulturaValidationTest(TestCase):
                 self.safra, Decimal("1500.00")
             )
 
-    def test_area_cultura_com_outras_culturas(self):
+    def test_15_area_cultura_com_outras_culturas(self):
         cultura_existente = Culturas.objects.create(
             nome="Milho", safra=self.safra, area_plantada=Decimal("600.00")
         )
@@ -201,7 +221,7 @@ class CulturaValidationTest(TestCase):
                 self.safra, Decimal("500.00")
             )
 
-    def test_area_cultura_atualizacao(self):
+    def test_16_area_cultura_atualizacao(self):
         cultura = Culturas.objects.create(
             nome="Soja", safra=self.safra, area_plantada=Decimal("400.00")
         )
@@ -221,15 +241,15 @@ class CulturaValidationTest(TestCase):
 class CulturaBusinessServiceTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            nome="Teste", cpf_cnpj="12345678901", password="testpass123"
+            nome="Teste", cpf_cnpj="59885743006", password="testpass123"
         )
 
         self.produtor = Produtores.objects.create(
-            usuario=self.user, nome="Produtor Teste"
+            usuario=self.user
         )
 
-        self.estado = Estados.objects.create(nome="São Paulo", sigla="SP")
-        self.cidade = Cidades.objects.create(nome="Campinas", estado=self.estado)
+        self.estado = Estados.objects.create(nome="São Paulo", sigla="SP", codigo_ibge=7)
+        self.cidade = Cidades.objects.create(nome="Campinas", estado=self.estado, codigo_ibge=8)
 
         self.fazenda = Fazendas.objects.create(
             nome="Fazenda Teste",
@@ -244,7 +264,7 @@ class CulturaBusinessServiceTest(TestCase):
             nome="Soja", safra=self.safra, area_plantada=Decimal("300.00")
         )
 
-    def test_calcular_area_disponivel_cultura(self):
+    def test_17_calcular_area_disponivel_cultura(self):
         info = CulturaBusinessService.calcular_area_disponivel_cultura(self.cultura)
 
         self.assertEqual(info["area_atual"], Decimal("300.00"))
@@ -254,7 +274,7 @@ class CulturaBusinessServiceTest(TestCase):
         self.assertIn("area_maxima_possivel", info)
         self.assertIn("percentual_utilizacao", info)
 
-    def test_calcular_resumo_safra(self):
+    def test_18_calcular_resumo_safra(self):
         resumo = CulturaBusinessService.calcular_resumo_safra(self.safra)
 
         self.assertIn("area_total_fazenda", resumo)
