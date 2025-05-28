@@ -4,8 +4,8 @@ from rest_framework.routers import SimpleRouter
 from .views import *
 
 router = SimpleRouter()
-router.register("estados", EstadosViewSet)
-router.register("cidades", CidadesViewSet)
+router.register(r"estados", EstadosViewSet)
+router.register(r"cidades", CidadesViewSet)
 
 urlpatterns = [
     path(
