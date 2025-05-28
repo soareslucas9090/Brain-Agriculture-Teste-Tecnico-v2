@@ -24,4 +24,5 @@ urlpatterns = [
     ),
     path("api/usuarios/v1/", include("Usuarios.urls")),
     path("api/localidades/v1/", include("Common.urls")),
+    path("api/brainagriculture/v1/", include("BrainAgriculture.urls")),
 ]

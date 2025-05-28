@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     "Usuarios.produtores",
     ### Common ###,
     "Common.localidades",
+    ### BrainAgriculture ###,
+    "BrainAgriculture.fazendas",
 ]
 
 MIDDLEWARE = [
