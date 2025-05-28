@@ -254,10 +254,10 @@ class ProdutoresViewSetTestCase(TestCase):
         view.request = type("Request", (), {"user": self.user1})()
         view.kwargs = {"pk": self.produtor1.pk}
 
-        self.assertTrue(view.get_dono_do_registro())
+        self.assertTrue(view.get_dono_do_registro(None))
 
         view.request.user = self.user2
-        self.assertFalse(view.get_dono_do_registro())
+        self.assertFalse(view.get_dono_do_registro(None))
 
         view.kwargs = {"pk": 99999}
-        self.assertFalse(view.get_dono_do_registro())
+        self.assertFalse(view.get_dono_do_registro(None))

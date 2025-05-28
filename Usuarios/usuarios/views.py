@@ -64,5 +64,5 @@ class UsuariosViewSet(BasicModelViewSet):
             return [EhMeuDadoOuSouAdmin()]
         return [EhAdmin()]
 
-    def get_dono_do_registro(self):
+    def get_dono_do_registro(self, obj):
         return self.request.user.id == int(self.kwargs.get("pk", None))

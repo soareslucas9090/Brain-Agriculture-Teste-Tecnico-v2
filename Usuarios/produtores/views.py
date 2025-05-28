@@ -57,7 +57,7 @@ class ProdutoresViewSet(BasicModelViewSet):
             return [EhMeuDadoOuSouAdmin()]
         return [EhAdmin()]
 
-    def get_dono_do_registro(self):
+    def get_dono_do_registro(self, obj):
         try:
             produtor = Produtores.objects.get(pk=self.kwargs.get("pk"))
             return self.request.user.id == produtor.usuario.id

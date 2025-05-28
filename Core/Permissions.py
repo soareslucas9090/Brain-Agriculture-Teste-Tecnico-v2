@@ -15,4 +15,4 @@ class EhMeuDadoOuSouAdmin(permissions.BasePermission):
         if isinstance(request.user, AnonymousUser):
             return False
 
-        return view.get_dono_do_registro() or request.user.is_admin
+        return view.get_dono_do_registro(obj) or request.user.is_admin
