@@ -13,6 +13,7 @@ class Produtores(BasicModel):
         verbose_name=_("Usuário do Sistema"),
         help_text=_("O usuário do sistema associado a este perfil de produtor."),
     )
+    nome = None
 
     def __str__(self):
         return self.usuario.nome
