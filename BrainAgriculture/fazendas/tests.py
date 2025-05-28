@@ -123,7 +123,6 @@ class FazendaAPITest(APITestCase):
         return str(refresh.access_token)
 
     def test_11_criar_fazenda_sucesso(self):
-        # Primeiro, vamos testar se conseguimos criar uma fazenda diretamente no banco
         fazenda = Fazendas.objects.create(
             nome="Fazenda Teste Direto",
             produtor=self.produtor,
@@ -132,10 +131,8 @@ class FazendaAPITest(APITestCase):
         )
         self.assertEqual(Fazendas.objects.count(), 1)
         
-        # Limpar para testar via API
         Fazendas.objects.all().delete()
         
-        # Agora vamos testar via API
         token = self.get_token(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
@@ -148,7 +145,6 @@ class FazendaAPITest(APITestCase):
 
         response = self.client.post("/api/brainagriculture/v1/fazendas/", data, format='json')
         
-        # Debug: imprimir a resposta para ver o que está acontecendo
         if response.status_code != status.HTTP_201_CREATED:
             print(f"Status Code: {response.status_code}")
             print(f"Response Data: {response.data}")
