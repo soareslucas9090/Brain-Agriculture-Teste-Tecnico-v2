@@ -36,6 +36,10 @@ SPECTACULAR_SETTINGS = {
             "name": "BrainAgriculture - Culturas",
             "description": "Rotas relacionadas com as operações permitidas para o modelo de cultura.",
         },
+        {
+            "name": "BrainAgriculture - Dashboards",
+            "description": "Rotas relacionadas com as operações permitidas para o modelo de cultura.",
+        },
     ],
     "SWAGGER_UI_DIST": "SIDECAR",
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",

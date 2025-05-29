@@ -15,6 +15,7 @@ from .serializers import (
 )
 
 
+@extend_schema(tags=["BrainAgriculture - Dashboards"])
 class DashboardViewSet(ViewSet):
     permission_classes = [IsAuthenticated]
 
