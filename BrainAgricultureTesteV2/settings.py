@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "Common.localidades",
     ### BrainAgriculture ###,
     "BrainAgriculture.fazendas",
+    "BrainAgriculture.dashboards",
 ]
 
 MIDDLEWARE = [
