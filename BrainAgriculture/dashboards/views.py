@@ -1,17 +1,19 @@
 from datetime import datetime
+
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from rest_framework.permissions import IsAuthenticated
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+
 from .business import DashboardBusiness
 from .serializers import (
     DashboardCompletoSerializer,
-    DashboardTotaisSerializer,
-    DashboardPorEstadoSerializer,
     DashboardPorCulturaSerializer,
-    DashboardUsoSoloSerializer
+    DashboardPorEstadoSerializer,
+    DashboardTotaisSerializer,
+    DashboardUsoSoloSerializer,
 )
 
 
@@ -25,18 +27,18 @@ class DashboardViewSet(ViewSet):
         responses={200: DashboardCompletoSerializer},
         parameters=[
             OpenApiParameter(
-                name='ano',
+                name="ano",
                 type=int,
                 location=OpenApiParameter.QUERY,
-                description='Ano de referência para cálculo de uso do solo',
+                description="Ano de referência para cálculo de uso do solo",
                 required=False,
-                default=datetime.now().year
+                default=datetime.now().year,
             )
-        ]
+        ],
     )
     def list(self, request):
-        ano_referencia = request.query_params.get('ano', datetime.now().year)
-        
+        ano_referencia = request.query_params.get("ano", datetime.now().year)
+
         try:
             ano_referencia = int(ano_referencia)
         except ValueError:
@@ -50,9 +52,9 @@ class DashboardViewSet(ViewSet):
     @extend_schema(
         summary="Totais do dashboard",
         description="Retorna o total de fazendas e hectares cadastrados",
-        responses={200: DashboardTotaisSerializer}
+        responses={200: DashboardTotaisSerializer},
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def totais(self, request):
         data = DashboardBusiness.get_totais()
         serializer = DashboardTotaisSerializer(data)
@@ -61,9 +63,9 @@ class DashboardViewSet(ViewSet):
     @extend_schema(
         summary="Fazendas por estado",
         description="Retorna a distribuição de fazendas por estado",
-        responses={200: DashboardPorEstadoSerializer(many=True)}
+        responses={200: DashboardPorEstadoSerializer(many=True)},
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def por_estado(self, request):
         data = DashboardBusiness.get_distribuicao_por_estado()
         serializer = DashboardPorEstadoSerializer(data, many=True)
@@ -72,9 +74,9 @@ class DashboardViewSet(ViewSet):
     @extend_schema(
         summary="Área por cultura",
         description="Retorna a distribuição de área por cultura plantada",
-        responses={200: DashboardPorCulturaSerializer(many=True)}
+        responses={200: DashboardPorCulturaSerializer(many=True)},
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def por_cultura(self, request):
         data = DashboardBusiness.get_distribuicao_por_cultura()
         serializer = DashboardPorCulturaSerializer(data, many=True)
@@ -86,19 +88,19 @@ class DashboardViewSet(ViewSet):
         responses={200: DashboardUsoSoloSerializer(many=True)},
         parameters=[
             OpenApiParameter(
-                name='ano',
+                name="ano",
                 type=int,
                 location=OpenApiParameter.QUERY,
-                description='Ano de referência para cálculo',
+                description="Ano de referência para cálculo",
                 required=False,
-                default=datetime.now().year
+                default=datetime.now().year,
             )
-        ]
+        ],
     )
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def uso_solo(self, request):
-        ano_referencia = request.query_params.get('ano', datetime.now().year)
-        
+        ano_referencia = request.query_params.get("ano", datetime.now().year)
+
         try:
             ano_referencia = int(ano_referencia)
         except ValueError:

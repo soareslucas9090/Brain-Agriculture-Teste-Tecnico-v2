@@ -119,14 +119,14 @@ class CulturaSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         safra = attrs.get("safra", self.instance.safra if self.instance else None)
         area_plantada = attrs.get("area_plantada")
-        
+
         if self.instance and area_plantada is not None:
             safra = self.instance.safra
-            
+
         if safra and area_plantada is not None:
             if isinstance(area_plantada, str):
                 area_plantada = Decimal(area_plantada)
-            
+
             AreaValidationService.validate_area_cultura_disponivel(
                 safra, area_plantada, self.instance.id if self.instance else None
             )
@@ -137,9 +137,9 @@ class CulturaSerializer(serializers.ModelSerializer):
 class CulturaCreateUpdateSerializer(CulturaSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
-        
+
     def to_representation(self, instance):
         return CulturaSerializer(instance, context=self.context).data

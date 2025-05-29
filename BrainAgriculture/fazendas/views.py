@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from Usuarios.produtores.models import Produtores
 from Core.BasicMyDataAndModelViewSet import BasicMyDataAndModelViewSet
+from Usuarios.produtores.models import Produtores
 
 from .business import CulturaBusinessService, FazendaBusinessService
 from .models import Culturas, Fazendas, Safras
@@ -55,11 +55,15 @@ class FazendasViewSet(BasicMyDataAndModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         try:
-            produtor = Produtores.objects.get(id=serializer.validated_data["produtor"].id)
+            produtor = Produtores.objects.get(
+                id=serializer.validated_data["produtor"].id
+            )
         except:
-            return Response({"detail": "Produtor não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Produtor não encontrado."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         if produtor.usuario != request.user:
             return Response(
@@ -159,11 +163,13 @@ class SafraViewSet(BasicMyDataAndModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         try:
             fazenda = Fazendas.objects.get(id=serializer.validated_data["fazenda"].id)
         except:
-            return Response({"detail": "Fazenda não encontrada."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Fazenda não encontrada."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         if fazenda.produtor.usuario != request.user:
             return Response(
@@ -250,11 +256,13 @@ class CulturaViewSet(BasicMyDataAndModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         try:
             safra = Safras.objects.get(id=serializer.validated_data["safra"].id)
         except:
-            return Response({"detail": "Safra não encontrada."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Safra não encontrada."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         if safra.fazenda.produtor.usuario != request.user:
             return Response(

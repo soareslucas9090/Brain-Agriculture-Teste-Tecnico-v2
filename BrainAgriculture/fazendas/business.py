@@ -65,18 +65,12 @@ class AreaValidationService:
         area_utilizada = Decimal("0")
         if cultura_atual_id:
             culturas_outras = list(safra.culturas.exclude(id=cultura_atual_id))
-            
-            area_utilizada = sum(
-                cultura.area_plantada
-                for cultura in culturas_outras
-            )
+
+            area_utilizada = sum(cultura.area_plantada for cultura in culturas_outras)
         else:
             culturas_todas = list(safra.culturas.all())
 
-            area_utilizada = sum(
-                cultura.area_plantada
-                for cultura in culturas_todas
-            )
+            area_utilizada = sum(cultura.area_plantada for cultura in culturas_todas)
 
         area_total_utilizada = area_utilizada + area_plantada
 
@@ -84,7 +78,7 @@ class AreaValidationService:
 
         if area_total_utilizada > area_agricultavel:
             area_disponivel = area_agricultavel - area_utilizada
-            
+
             raise serializers.ValidationError(
                 {
                     "area_plantada": _(
