@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from .drf_spectacular_settings import *
 from .rest_framework_settings import *
@@ -88,6 +90,16 @@ if "test" in sys.argv or "test_coverage" in sys.argv:
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": ":memory:",
     }
+    
+sentry_sdk.init(
+    dsn=os.environ.get("DSN_SENTRY"),
+    integrations=[
+        DjangoIntegration(),
+    ],
+
+    send_default_pii=True,
+    traces_sample_rate=0.5
+)
 
 AUTH_PASSWORD_VALIDATORS = [
     {

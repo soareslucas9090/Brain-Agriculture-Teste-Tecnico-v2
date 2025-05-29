@@ -18,13 +18,14 @@ jsonschema==4.23.0
 jsonschema-specifications==2025.4.1
 packaging==25.0
 pluggy==1.6.0
-psycopg2==2.9.10
+psycopg2-binary==2.9.10
 PyJWT==2.9.0
 python-dotenv==1.1.0
 PyYAML==6.0.2
 referencing==0.36.2
 requests==2.32.3
 rpds-py==0.25.1
+sentry-sdk==2.29.1
 sqlparse==0.5.3
 typing_extensions==4.13.2
 tzdata==2025.2
