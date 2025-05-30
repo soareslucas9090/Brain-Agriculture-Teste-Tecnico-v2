@@ -8,19 +8,27 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "BrainAgricultureTesteV2.settings")
 django.setup()
 
+from django.contrib.auth.hashers import make_password
+
 from BrainAgriculture.fazendas.models import Culturas, Fazendas, Safras
 from Common.localidades.models import Cidades
 from Usuarios.produtores.models import Produtores
 from Usuarios.usuarios.models import Usuarios
 
 user1 = Usuarios.objects.create(
-    cpf_cnpj="71842388002", nome="Usuário Um Da Silva", password="12345678"
+    cpf_cnpj="71842388002",
+    nome="Usuário Um Da Silva",
+    password=make_password("12345678"),
 )
 user2 = Usuarios.objects.create(
-    cpf_cnpj="97533461070", nome="Usuário Dois Soares de Almeida", password="12345678"
+    cpf_cnpj="97533461070",
+    nome="Usuário Dois Soares de Almeida",
+    password=make_password("12345678"),
 )
 user3 = Usuarios.objects.create(
-    cpf_cnpj="38213704000115", nome="Usuário Três Santos", password="12345678"
+    cpf_cnpj="38213704000115",
+    nome="Usuário Três Santos",
+    password=make_password("12345678"),
 )
 
 produtor1 = Produtores.objects.create(usuario=user1)
