@@ -2,13 +2,7 @@
 
 #  Brain Agriculture - Teste Técnico v2
 
-<img  align="center"  alt="Python"  width="30"  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"><span>&nbsp;&nbsp;&nbsp;</span>
-
-<img  align="center"  alt="Django"  width="30"  src="https://cdn.worldvectorlogo.com/logos/django.svg"><span>&nbsp;&nbsp;&nbsp;</span>
-
-<img  align="center"  alt="Django Rest Framework"  height="40"  src="https://i.imgur.com/dcVFAeV.png"><span>&nbsp;&nbsp;&nbsp;</span>
-
-<img  align="center"  alt="PostgreSQL"  width="36"  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg"><span>&nbsp;&nbsp;&nbsp;</span>
+<img  align="center"  alt="Python"  width="30"  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"><span>&nbsp;&nbsp;&nbsp;</span><img  align="center"  alt="Django"  width="30"  src="https://cdn.worldvectorlogo.com/logos/django.svg"><span>&nbsp;&nbsp;&nbsp;</span><img  align="center"  alt="Django Rest Framework"  height="40"  src="https://i.imgur.com/dcVFAeV.png"><span>&nbsp;&nbsp;&nbsp;</span><img  align="center"  alt="PostgreSQL"  width="36"  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg"><span>&nbsp;&nbsp;&nbsp;</span>
   
 
 ## Sobre o Projeto
