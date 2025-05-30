@@ -1,10 +1,6 @@
 
-  
-  
 
-# Cortex & SOTICON API
-
-  
+#  Brain Agriculture - Teste Técnico v2
 
 <img  align="center"  alt="Python"  width="30"  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"><span>&nbsp;&nbsp;&nbsp;</span>
 
@@ -13,7 +9,6 @@
 <img  align="center"  alt="Django Rest Framework"  height="40"  src="https://i.imgur.com/dcVFAeV.png"><span>&nbsp;&nbsp;&nbsp;</span>
 
 <img  align="center"  alt="PostgreSQL"  width="36"  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg"><span>&nbsp;&nbsp;&nbsp;</span>
-
   
 
 ## Sobre o Projeto
@@ -55,8 +50,6 @@ Algumas funcionalidades foram planejadas, mas não houve tempo de implementar de
 
 - Suporte a Cache em Banco (Redis)
 
-- Tuning de SQL nas pesquisas de requisições de grandes quantidade de dados
-
 
 ## Segurança
 
@@ -68,7 +61,7 @@ A documentação Swagger está na rota `/api/schema/swagger/`
 
   
 
-# Rodando o projeto
+## Rodando o projeto
 
   
 
@@ -81,7 +74,6 @@ Para instalar as dependências é necesário rodar o comando `pip install -r req
 O código busca um arquivo `.env` para procurar as variáveis de ambiente necessárias, e caso não ache, usará as variáveis de ambiente instaladas no SO. O arquivo deve seguir os seguintes moldes:
 
 ```
-
 DB_PASSWORD=Senha do banco
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=postgres
@@ -108,6 +100,26 @@ Crie um super usuário com o comando `python manage.py createsuperuser` e forne�
 O servidor para rodar o sistema em um computador Linux é o "Gunicorn", e o comando é:
 
 `gunicorn BrainAgricultureTesteV2.wsgi --workers 2 --bind :8000 --access-logfile -`
+
+## Testes
+
+Foram implementados testes em todos os apps, menos no app de "localidades", que não era um requisito da tarefa, e há pouca coisa a ser testada (apenas a integração com a API do IBGE, que já foi consumida e o banco alimentado com todos os estados e municípios).
+Para executar os testes é necessário apenas rodar o comando `python manage.py test` ou, caso queira rodar app por app, os comandos podem ser os seguintes:
+- `python manage.py test Usuarios.usuarios.tests` para o app de "usuarios".
+- `python manage.py test Usuarios.produtores.tests` para o app de "produtores".
+- `python manage.py test BrainAgriculture.fazendas.tests` para o app de "fazendas".
+- `python manage.py test BrainAgriculture.dashboards.tests` para o app de "dashboards".
+
+## Dados Mockados
+Foram mockados alguns dados, a fim de facilitar os testes pela equipe técnica. Os usuários para testar o sistema estão listados abaixo:
+|Nome|CPF / CNPJ (login)|Senha|Tipo|
+|-|-|-|-|
+|Admin|11111111111|12345678|Admin|
+|Usuário Um Da Silva|71842388002|12345678|Usuário comum|
+|Usuário Dois Soares de Almeida|97533461070|12345678|Usuário comum|
+|Usuário Três Santos|38213704000115|12345678|Usuário comum|
+
+Os dados da outras tabelas também já estão mockados e prontos para serem consumidos.
 
 
 ## Autenticação
