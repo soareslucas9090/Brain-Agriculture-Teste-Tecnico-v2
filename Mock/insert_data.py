@@ -14,16 +14,13 @@ from Usuarios.produtores.models import Produtores
 from Usuarios.usuarios.models import Usuarios
 
 user1 = Usuarios.objects.create(
-    cpf_cnpj="71842388002",
-    nome="Usuário Um Da Silva",
+    cpf_cnpj="71842388002", nome="Usuário Um Da Silva", password="12345678"
 )
 user2 = Usuarios.objects.create(
-    cpf_cnpj="97533461070",
-    nome="Usuário Dois Soares de Almeida",
+    cpf_cnpj="97533461070", nome="Usuário Dois Soares de Almeida", password="12345678"
 )
 user3 = Usuarios.objects.create(
-    cpf_cnpj="38213704000115",
-    nome="Usuário Três Santos",
+    cpf_cnpj="38213704000115", nome="Usuário Três Santos", password="12345678"
 )
 
 produtor1 = Produtores.objects.create(usuario=user1)
