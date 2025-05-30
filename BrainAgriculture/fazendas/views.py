@@ -92,6 +92,16 @@ class FazendasViewSet(BasicMyDataAndModelViewSet):
 
         return Fazendas.objects.none()
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="ano",
+                description="Filtrar por ano.",
+                required=False,
+                type=int,
+            ),
+        ]
+    )
     @action(detail=True, methods=["get"])
     def area_info(self, request, pk=None):
         fazenda = self.get_object()
