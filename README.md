@@ -7,7 +7,7 @@
 
 ## Sobre o Projeto
 
-O projeto foi feitro com Django e Django Rest Framework, usando algumas libs, como Django Filter, para facilitar as pesquisas por query params, Django Simple History, para tornar rastreável as alterações no banco e nos dados, sentry para rastrear erros inesperados/não tratados, entre outras incluídas no projeto.
+O projeto foi feitro com Django e Django Rest Framework, usando algumas libs, como Django Filter, para facilitar as pesquisas por query params, Django Simple History, para tornar rastreável as alterações no banco e nos dados, Sentry para rastrear erros inesperados/não tratados, entre outras incluídas no projeto.
 
   
 
@@ -25,16 +25,18 @@ O projeto foi feitro com Django e Django Rest Framework, usando algumas libs, co
     -   Por estado.
     -   Por cultura plantada.
     -   Por uso do solo (área agricultável e vegetação).
+  
+8. Rastreabilidade de erros com Sentry.
 
-- Gerenciamento de permissões de acordo com o tipo de usuário.
+9. Gerenciamento de permissões de acordo com o tipo de usuário.
 
-- Segurança e gerenciamento para os dados pertencentes ao usuário requisitante, ou não.
+10. Segurança e gerenciamento para os dados pertencentes ao usuário requisitante, ou não.
 
-- Personalização de views de acordo com permissões de usuário
+11. Personalização de views de acordo com permissões de usuário
 
-- Segurança baseada em tokens jwt (access e refresh tokens)
+12. Segurança baseada em tokens jwt (access e refresh tokens)
 
-- Documentação Swagger Completa
+13. Documentação Swagger Completa
 
 ### Sem tempo para implementar
 
@@ -82,10 +84,7 @@ DSN_SENTRY=DSN do Sentry
 
 Colocar o arquivo `.env` na raiz do projeto ou adicionar estas variáveis diretamente no sistema.
 
-  
-
 Faça a criação do banco de dados com o comando `python manage.py migrate`.
-
 
 Execute um `python manage.py collectstatic` para criar os arquivos estáticos da documentação da API, pois sem este comando, o Swagger não consegue executar os arquivos CSS e JS necessários para rodar a sua interface.
 
@@ -105,6 +104,7 @@ Para executar os testes é necessário apenas rodar o comando `python manage.py 
 - `python manage.py test BrainAgriculture.dashboards.tests` para o app de "dashboards".
 
 ## Dados Mockados
+
 Foram mockados alguns dados, a fim de facilitar os testes pela equipe técnica. Os usuários para testar o sistema estão listados abaixo:
 |Nome|CPF / CNPJ (login)|Senha|Tipo|
 |-|-|-|-|
